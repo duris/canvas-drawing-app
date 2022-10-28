@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useOnDraw } from "./Hooks"
+import { useOnDraw, useSaveCanvas } from "./Hooks"
 
 const Canvas = (
   {
@@ -9,56 +9,57 @@ const Canvas = (
 
   const [currentColor, setCurrentColor] = useState('#000000')
 
-  
-  function loadGrid(ctx) {
-    const bw = window.innerWidth
-    const bh = window.innerHeight
-    const lw = 1              // box border
-    const boxRow = 20         // how many boxes
-    const box = bw / boxRow   // box size
-    ctx.lineWidth = lw
-    ctx.strokeStyle = 'rgba(234, 234, 234, 0.3)'
-    for (let x=0;x<bw;x+=box)
-    {
-      for (let y=0;y<bh;y+=box)
-      {
-        ctx.strokeRect(x,y,box,box)
-      }
-    }
-  }
-    
 
   const setCanvasRef = useOnDraw(onDraw)
+  const setCanvasRef2 = useSaveCanvas(saveCanvas)
+
+  var source;
+  var dest;
+
+  function saveCanvas(ctx){
+        
+        if (source) {
+          ctx.drawImage(source, 0, 0)
+        }
+        dest = ctx        
+  }
+  
+
 
   function onDraw(ctx, point) {
     
     ctx.fillStyle = currentColor
     
-    const bw = window.innerWidth
-    const bh = window.innerHeight
-    const lw = .1              // box border
-    const boxRow = 33         // how many boxes
+
+    const lw = 0        
+    const size = 20      // box border
+    const boxRow = 40   
+    const bw = boxRow*size
+    const bh = boxRow*size      // how many boxes
     const box = bw / boxRow   // box size
     ctx.lineWidth = lw
-    ctx.strokeStyle = 'rgba(215, 215, 215, 0.3)'
+    ctx.strokeStyle = 'black'
     for (let x=0;x<bw;x+=box)
     {
       for (let y=0;y<bh;y+=box)
       {
         let boxToDrawX = Math.ceil(point.x/box)
         let boxToDrawY = Math.ceil(point.y/box)
-        // console.log(box)
+        
         ctx.beginPath()
-        ctx.rect((boxToDrawX*23)-23,( boxToDrawY*23)-23, 23, 23);    
+        ctx.rect((boxToDrawX*box)-box,( boxToDrawY*box)-box, box, box);    
         ctx.fill();
-        ctx.strokeRect(x,y,box,box)
+        //DRAW GRID
+        // ctx.strokeRect(x,y,box,box)         
+        
       }
     }
+    dest.drawImage(ctx.canvas,0,0,100,100)
   }
 
   return(
     <div>      
-      <div className={`bg-[${currentColor}] h-12 w-12 rounded-full flex m-auto mb-10`}></div>
+      <div className="p-2 bg-slate-700 text-center text-white">Current Color<div className={`bg-[${currentColor}] h-12 w-12 rounded-full flex m-auto my-5`}></div></div>
       <div className=" bg-slate-200 mb-2 w-full">
        <button onClick={() => setCurrentColor('#000000')} className=" bg-[#000000] w-10 h-10"></button>
        <button onClick={() => setCurrentColor('#ae00ff')} className=" bg-[#ae00ff] w-10 h-10"></button>
@@ -67,6 +68,9 @@ const Canvas = (
        <button onClick={() => setCurrentColor('#DAA520')} className=" bg-[#DAA520] w-10 h-10"></button>
        <button onClick={() => setCurrentColor('#FF69B4')} className=" bg-[#FF69B4] w-10 h-10"></button>
        <button onClick={() => setCurrentColor('#1E90FF')} className=" bg-[#1E90FF] w-10 h-10"></button>
+       <button onClick={() => setCurrentColor('#7FFF00')} className=" bg-[#7FFF00] w-10 h-10"></button>
+       <button onClick={() => setCurrentColor('#FF8C00')} className=" bg-[#FF8C00] w-10 h-10"></button>
+       <button onClick={() => setCurrentColor('#FAFAD2')} className=" bg-[#FAFAD2] w-10 h-10"></button>
                
       </div>
     <canvas 
@@ -75,6 +79,13 @@ const Canvas = (
       style={canvasStyle}
       ref={setCanvasRef}
     />
+    <canvas 
+      width={100} 
+      height={100} 
+      style={canvasStyle}
+      ref={setCanvasRef2}
+    />
+    
     </div>
   )
 }

@@ -1,5 +1,7 @@
 import { useRef } from "react";
 
+
+
 export function useOnDraw(onDraw) {
 
   const canvasRef =  useRef(null);
@@ -8,20 +10,15 @@ export function useOnDraw(onDraw) {
     if(!ref) return;
     canvasRef.current = ref;
     initMouseMoveListener()
-    
   }
-
   function initMouseMoveListener() {
-    const mouseMoveListener = (e) => {
-      // console.log({x: e.clientX, y: e.clientY});
+    const mouseMoveListener = (e) => {      
       const point = computePointInCanvas(e.clientX, e.clientY);
       const ctx = canvasRef.current.getContext('2d');
-      if(onDraw) onDraw(ctx, point);
-      // if(loadGrid) loadGrid(ctx);
+      if(onDraw) onDraw(ctx, point); 
     }
     window.addEventListener('mousemove', mouseMoveListener)
   }
-
   function computePointInCanvas(clientX, clientY) {
     if(canvasRef.current) {
           const boundingRect = canvasRef.current.getBoundingClientRect()
@@ -32,8 +29,21 @@ export function useOnDraw(onDraw) {
     } else {
       return null;
     }
-
   }
-
   return setCanvasRef;
+}
+
+export function useSaveCanvas(saveCanvas) {
+  
+  const canvasRef =  useRef(null);
+
+  function setCanvasRef(ref) {
+    if(!ref) return;
+    canvasRef.current = ref;
+   
+    const ctx = canvasRef.current.getContext('2d');
+    if(saveCanvas) saveCanvas(ctx); 
+  }
+  
+  return setCanvasRef
 }
