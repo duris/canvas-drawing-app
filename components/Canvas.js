@@ -1,17 +1,14 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useOnDraw, useSaveCanvas } from "./Hooks"
 
-const Canvas = (
-  {
-    width,
-    height
-  }) => {
+const Canvas = ({width,height}) => {
 
   const [currentColor, setCurrentColor] = useState('#000000')
 
 
   const setCanvasRef = useOnDraw(onDraw)
   const setCanvasRef2 = useSaveCanvas(saveCanvas)
+
 
   var source;
   var dest;
@@ -32,8 +29,8 @@ const Canvas = (
     
 
     const lw = 0        
-    const size = 20      // box border
-    const boxRow = 40   
+    const size = 10      // box border
+    const boxRow = 1   
     const bw = boxRow*size
     const bh = boxRow*size      // how many boxes
     const box = bw / boxRow   // box size
@@ -51,10 +48,10 @@ const Canvas = (
         ctx.fill();
         //DRAW GRID
         // ctx.strokeRect(x,y,box,box)         
-        
+        console.log(boxToDrawY)
       }
     }
-    dest.drawImage(ctx.canvas,0,0,100,100)
+    dest.drawImage(ctx.canvas,0,0,150,75)
   }
 
   return(
@@ -71,20 +68,27 @@ const Canvas = (
        <button onClick={() => setCurrentColor('#7FFF00')} className=" bg-[#7FFF00] w-10 h-10"></button>
        <button onClick={() => setCurrentColor('#FF8C00')} className=" bg-[#FF8C00] w-10 h-10"></button>
        <button onClick={() => setCurrentColor('#FAFAD2')} className=" bg-[#FAFAD2] w-10 h-10"></button>
+       <button onClick={() => setCurrentColor('#FFFFFF')} className=" bg-[#FFFFFF] w-10 h-10"></button>
                
       </div>
     <canvas 
-      width={width} 
-      height={height} 
+      width={600} 
+      height={300} 
       style={canvasStyle}
       ref={setCanvasRef}
     />
+    
+    <div className="mt-1">
     <canvas 
-      width={100} 
-      height={100} 
+      width={150} 
+      height={75} 
       style={canvasStyle}
       ref={setCanvasRef2}
     />
+    </div>
+    <div>
+    
+    </div>
     
     </div>
   )
@@ -93,6 +97,6 @@ const Canvas = (
 export default Canvas
 
 const canvasStyle  = {
-  border: '1px solid black',
+  // border: '1px solid white',
   background: 'white',
 }
