@@ -4,7 +4,7 @@ import { useOnDraw, useSaveCanvas } from "./Hooks"
 const Canvas = ({width,height}) => {
 
   const [currentColor, setCurrentColor] = useState('#000000')
-
+  const [pixelPaintSize, setPixelPaintSize] = useState(5)
 
   const setCanvasRef = useOnDraw(onDraw)
   const setCanvasRef2 = useSaveCanvas(saveCanvas)
@@ -29,7 +29,7 @@ const Canvas = ({width,height}) => {
     
 
     const lw = 0        
-    const size = 10      // box border
+    const size = pixelPaintSize      // box border
     const boxRow = 1   
     const bw = boxRow*size
     const bh = boxRow*size      // how many boxes
@@ -46,18 +46,38 @@ const Canvas = ({width,height}) => {
         ctx.beginPath()
         ctx.rect((boxToDrawX*box)-box,( boxToDrawY*box)-box, box, box);    
         ctx.fill();
-        //DRAW GRID
-        // ctx.strokeRect(x,y,box,box)         
-        console.log(boxToDrawY)
+       
       }
     }
-    dest.drawImage(ctx.canvas,0,0,150,75)
+    // dest.drawImage(ctx.canvas,0,0,150,75)
+    source = ctx
   }
+
+  const getImageData = () => {   
+    let data = source.canvas.toDataURL()  
+  }
+
+  const increasePixelSize = () => {
+    if(pixelPaintSize+5<11){
+    setPixelPaintSize(pixelPaintSize+5)
+    }
+  }
+  const decreasePixelSize = () => {
+    if(pixelPaintSize-5>0){
+    setPixelPaintSize(pixelPaintSize-5)
+    }
+  }
+
+
 
   return(
     <div>      
-      <div className="p-2 bg-slate-700 text-center text-white">Current Color<div className={`bg-[${currentColor}] h-12 w-12 rounded-full flex m-auto my-5`}></div></div>
-      <div className=" bg-slate-200 mb-2 w-full">
+      <div className=" absolute top-0">
+      <div className="p-2 bg-slate-100 text-center text-slate-900">Current Color<div className={`bg-[${currentColor}] h-12 w-12 rounded-full flex m-auto my-5`}></div>
+      <button className=" absolute left-0 top-20 px-1 rounded-lg inline-block mx-1 bg-slate-300" onClick={increasePixelSize}>+</button>
+      <button className=" absolute left-6 top-20 px-1 rounded-lg inline-block mx-1 bg-slate-300" onClick={decreasePixelSize}>-</button>
+      </div>      
+      <div className=" bg-slate-200 w-full">
        <button onClick={() => setCurrentColor('#000000')} className=" bg-[#000000] w-10 h-10"></button>
        <button onClick={() => setCurrentColor('#ae00ff')} className=" bg-[#ae00ff] w-10 h-10"></button>
        <button onClick={() => setCurrentColor('#008000')} className=" bg-[#008000] w-10 h-10"></button>
@@ -71,25 +91,24 @@ const Canvas = ({width,height}) => {
        <button onClick={() => setCurrentColor('#FFFFFF')} className=" bg-[#FFFFFF] w-10 h-10"></button>
                
       </div>
+      </div>
+      <div className="border inline-block top-10 relative ">
     <canvas 
-      width={600} 
-      height={300} 
+      width={400} 
+      height={400} 
       style={canvasStyle}
       ref={setCanvasRef}
     />
-    
+    </div>
     <div className="mt-1">
-    <canvas 
+    {/* <canvas 
       width={150} 
       height={75} 
       style={canvasStyle}
       ref={setCanvasRef2}
-    />
+    /> */}
     </div>
-    <div>
-    
-    </div>
-    
+
     </div>
   )
 }
